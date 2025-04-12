@@ -10,9 +10,15 @@
     "note": "./index.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "dependencies": {
     "yargs": "^17.7.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.1",
+    "chai": "^5.2.0",
+    "mocha": "^11.1.0",
+    "sinon": "^20.0.0"
   }
 }
