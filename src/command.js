@@ -28,8 +28,8 @@ yargs(hideBin(process.argv))
       });
     },
     async (argv) => {
-      const { note, tags } = argv;
-      const addedNote = await newNote(note, tags);
+      const tags = argv.tags ? argv.tags.split(",") : [];
+      const addedNote = await newNote(argv.note, tags);
       console.log("New Note:", addedNote);
     }
   )
@@ -82,11 +82,15 @@ yargs(hideBin(process.argv))
     (yargs) => {
       return yargs.positional("port", {
         describe: "port to bind on",
-        default: 5000,
+        default: 3000,
         type: "number",
       });
     },
-    async (argv) => {}
+    async (argv) => {
+      const { start } = await import("./server.js");
+      const notes = await getAllNotes();
+      start(notes, argv.port);
+    }
   )
   .command(
     "clean",
