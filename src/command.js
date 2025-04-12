@@ -1,5 +1,21 @@
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
+import {
+  findNotes,
+  getAllNotes,
+  newNote,
+  removeAllNotes,
+  removeNote,
+} from "./notes.js";
+
+const listNotes = (notes) => {
+  notes.forEach(({ id, content, tags }) => {
+    console.log("id: ", id);
+    console.log("tags: ", tags);
+    console.log("content: ", content);
+    console.log("\n");
+  });
+};
 
 yargs(hideBin(process.argv))
   .command(
@@ -11,7 +27,11 @@ yargs(hideBin(process.argv))
         type: "string",
       });
     },
-    async (argv) => {}
+    async (argv) => {
+      const { note, tags } = argv;
+      const addedNote = await newNote(note, tags);
+      console.log("New Note:", addedNote);
+    }
   )
   .option("tags", {
     alias: "t",
@@ -22,7 +42,10 @@ yargs(hideBin(process.argv))
     "all",
     "get all notes",
     () => {},
-    async (argv) => {}
+    async (argv) => {
+      const notes = await getAllNotes();
+      listNotes(notes);
+    }
   )
   .command(
     "find <filter>",
@@ -34,7 +57,10 @@ yargs(hideBin(process.argv))
         type: "string",
       });
     },
-    async (argv) => {}
+    async (argv) => {
+      const filteredNotes = await findNotes(argv.filter);
+      listNotes(filteredNotes);
+    }
   )
   .command(
     "remove <id>",
@@ -45,7 +71,10 @@ yargs(hideBin(process.argv))
         description: "The id of the note you want to remove",
       });
     },
-    async (argv) => {}
+    async (argv) => {
+      const notes = await removeNote(argv.id);
+      listNotes(notes);
+    }
   )
   .command(
     "web [port]",
@@ -63,7 +92,10 @@ yargs(hideBin(process.argv))
     "clean",
     "remove all notes",
     () => {},
-    async (argv) => {}
+    async (argv) => {
+      const notes = await removeAllNotes();
+      listNotes(notes);
+    }
   )
   .demandCommand(1)
   .parse();

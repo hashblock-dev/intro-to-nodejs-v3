@@ -1,7 +1,7 @@
 import fs from "node:fs/promises";
 import { expect } from "chai";
 import sinon from "sinon";
-import { getDB, saveDB, insertDB } from "../src/db.js";
+import { getDB, saveDB, insertDB, DB_PATH } from "../src/db.js";
 
 describe("db.js", () => {
   let readFileStub, writeFileStub;
@@ -22,7 +22,7 @@ describe("db.js", () => {
 
       const db = await getDB();
 
-      expect(readFileStub.calledWith("../db.json", "utf-8")).to.be.true;
+      expect(readFileStub.calledWith(DB_PATH, "utf-8")).to.be.true;
       expect(db).to.deep.equal({ notes: [] });
     });
   });
@@ -33,9 +33,8 @@ describe("db.js", () => {
 
       await saveDB(mockDB);
 
-      expect(
-        writeFileStub.calledWith("../db.json", JSON.stringify(mockDB, null, 2))
-      ).to.be.true;
+      expect(writeFileStub.calledWith(DB_PATH, JSON.stringify(mockDB, null, 2)))
+        .to.be.true;
     });
   });
 
@@ -49,10 +48,10 @@ describe("db.js", () => {
 
       const result = await insertDB(newNote);
 
-      expect(readFileStub.calledWith("../db.json", "utf-8")).to.be.true;
+      expect(readFileStub.calledWith(DB_PATH, "utf-8")).to.be.true;
       expect(
         writeFileStub.calledWith(
-          "../db.json",
+          DB_PATH,
           JSON.stringify({ notes: [newNote] }, null, 2)
         )
       ).to.be.true;
